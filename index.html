@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Woca Expert - A Maior Evolução</title>
+    <title>Dashboard Woca Expert</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -11,22 +11,22 @@
     <!-- Font Switzer -->
     <link href="https://api.fontshare.com/v2/css?f[]=switzer@300,400,500,600,700,800&display=swap" rel="stylesheet">
 
-    <!-- React & ReactDOM (UMD) -->
+    <!-- React & ReactDOM -->
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     
-    <!-- Babel Standalone for JSX -->
+    <!-- Babel -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <style>
-        /* Configurações Globais */
         :root {
             --color-bg: #eef0ff;
             --color-text: #121212;
             --color-brand-orange: #DD520C;
             --color-brand-blue: #2542AB;
-            --color-btn: #ee594a;
-            --color-btn-hover: #d64b3d;
         }
 
         body {
@@ -37,7 +37,7 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* Animações de Fundo (Ambient Light) */
+        /* Ambient Light */
         .ambient-light {
             position: fixed;
             top: 0;
@@ -63,7 +63,6 @@
             background: radial-gradient(circle, var(--color-brand-blue) 0%, transparent 70%);
             top: -15%;
             right: -10%;
-            animation-delay: 0s;
         }
 
         .orb-2 {
@@ -80,882 +79,390 @@
             50% { transform: translate(20px, -30px); }
         }
 
-        /* Navbar Flutuante */
-        .glass-nav {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.6);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+        /* Cards */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85); 
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.9);
+            box-shadow: 0 4px 20px rgba(37, 66, 171, 0.05);
+            border-radius: 24px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
         }
 
-        /* Gradiente do Texto Woca Expert */
-        .text-expert-highlight {
-             background: linear-gradient(90deg, #DD520C 0%, #2542AB 100%);
+        .glass-card:hover {
+            box-shadow: 0 8px 30px rgba(37, 66, 171, 0.12);
+            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        .text-gradient {
+            background: linear-gradient(90deg, #DD520C 0%, #2542AB 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
-        
-        .border-gradient {
-            background: linear-gradient(90deg, #DD520C, #2542AB);
-            padding: 2px;
-            border-radius: 12px;
-        }
 
-        .badge-gradient {
-            background: linear-gradient(90deg, #DD520C, #2542AB);
-        }
-
-        /* Badge Flutuante no Topo do Card */
-        .floating-badge {
-            background: linear-gradient(90deg, #DD520C, #2542AB);
-            color: white;
-            font-size: 0.75rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            padding: 0.4rem 0.8rem;
-            border-radius: 9999px;
-            position: absolute;
-            top: 0;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            box-shadow: 0 4px 15px rgba(37, 66, 171, 0.25);
-            white-space: nowrap;
-        }
-
-        /* Pricing Specifics */
-        .price-super {
-            font-size: 1.25rem;
-            vertical-align: top;
-            margin-top: 6px;
-            display: inline-block;
-            font-weight: 600;
-            color: #ee594a;
-        }
-        .price-main {
-            font-size: 3rem;
-            font-weight: 800;
-            line-height: 1;
-            color: #121212;
-        }
-        .price-cents {
-            font-size: 1.15rem;
-            vertical-align: top;
-            margin-top: 6px;
-            display: inline-block;
-            font-weight: 700;
-            color: #121212;
-        }
-
-        /* Animações Básicas */
-        .fade-in { opacity: 0; animation: fadeIn 0.8s ease-out forwards; }
-        .slide-up { opacity: 0; transform: translateY(20px); animation: slideUp 0.8s ease-out forwards; }
-        
-        .delay-100 { animation-delay: 0.1s; }
-        .delay-200 { animation-delay: 0.2s; }
-        .delay-300 { animation-delay: 0.3s; }
-
-        @keyframes fadeIn { to { opacity: 1; } }
-        @keyframes slideUp { to { opacity: 1; transform: translateY(0); } }
-
-        /* --- ANIMAÇÃO DE DESENHO DO LOGO (HERO) --- */
-        .logo-draw-path {
-            stroke-dasharray: 400;
-            stroke-dashoffset: 400;
-            fill-opacity: 0;
-            /* Animation: Draw (4s) -> Wait (3s) -> Fade (1s) -> Loop */
-            animation: drawLoop 8s ease-in-out infinite;
-        }
-
-        @keyframes drawLoop {
-            0% { stroke-dashoffset: 400; opacity: 0; }
-            10% { opacity: 1; }
-            40% { stroke-dashoffset: 0; } /* Draw complete */
-            70% { stroke-dashoffset: 0; opacity: 1; } /* Stay */
-            85% { opacity: 0; } /* Fade out */
-            100% { stroke-dashoffset: 400; opacity: 0; } /* Reset */
-        }
-
-        /* --- ANIMAÇÕES DA SEÇÃO DE VÍDEO --- */
-        .circuit-path {
-            stroke-dasharray: 100;
-            stroke-dashoffset: 100;
-            animation: flowCircuit 3s ease-out forwards;
-        }
-        @keyframes flowCircuit {
-            to { stroke-dashoffset: 0; }
-        }
-
-        /* Ícone: Desenho no Hover */
-        .draw-icon path, 
-        .draw-icon circle, 
-        .draw-icon rect, 
-        .draw-icon line, 
-        .draw-icon polyline {
-            stroke-dasharray: 100;
-            stroke-dashoffset: 0;
-            transition: stroke-dashoffset 0s;
-        }
-
-        .group:hover .draw-icon path,
-        .group:hover .draw-icon circle,
-        .group:hover .draw-icon rect,
-        .group:hover .draw-icon line,
-        .group:hover .draw-icon polyline {
-            animation: drawPath 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-        }
-
-        @keyframes drawPath {
-            0% { stroke-dashoffset: 100; opacity: 0; }
-            10% { opacity: 1; }
-            100% { stroke-dashoffset: 0; opacity: 1; }
-        }
-
-        /* --- ANIMAÇÃO DE SCANNER (FEATURE CARD) --- */
-        .scanner-line {
-            position: absolute;
-            top: 0;
-            left: 0;
+        /* Barras de progresso */
+        .progress-bar-bg {
+            background-color: rgba(37, 66, 171, 0.08);
+            border-radius: 999px;
+            height: 8px;
             width: 100%;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, #DD520C, transparent);
-            box-shadow: 0 0 10px #DD520C;
-            opacity: 0.8;
-            animation: scan 3s ease-in-out infinite;
-            z-index: 10;
+            overflow: hidden;
         }
-        
-        @keyframes scan {
-            0% { top: 0%; opacity: 0; }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
-            100% { top: 100%; opacity: 0; }
-        }
-
-        /* Grid Masonry-ish styling for Features */
-        .feature-card-glass {
-            background: rgba(255, 255, 255, 0.6);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.8);
-            box-shadow: 0 8px 32px rgba(37, 66, 171, 0.05);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .feature-card-glass:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 40px rgba(37, 66, 171, 0.1);
-            border-color: #fff;
+        .progress-bar-fill {
+            height: 100%;
+            border-radius: 999px;
+            transition: width 1s ease-in-out;
         }
 
     </style>
 </head>
-<body>
+<body class="p-4 md:p-8">
     <div class="ambient-light">
         <div class="orb orb-1"></div>
         <div class="orb orb-2"></div>
     </div>
+
     <div id="root"></div>
 
     <script type="text/babel">
-        // --- COMPONENTES UTILS ---
-        const CheckIcon = ({ className }) => (
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polyline points="20 6 9 17 4 12"/></svg>
-        );
-        const XIcon = ({ className }) => (
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-        );
-        const ChevronDownIcon = ({ className }) => (
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m6 9 6 6 6-6"/></svg>
-        );
-        const ChevronUpIcon = ({ className }) => (
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m18 15-6-6-6 6"/></svg>
-        );
-        
-        // Icons for Features
-        const ZapIcon = ({ className }) => ( <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> );
-        const BoxIcon = ({ className }) => ( <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg> );
-        const PrinterIcon = ({ className }) => ( <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect width="12" height="8" x="6" y="14"/></svg> );
-        const SlidersIcon = ({ className }) => ( <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg> );
-        const StarIcon = ({ className }) => ( <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> );
-        const FileScanIcon = ({ className }) => ( <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg> );
 
-
-        // --- SEÇÕES DO SITE ---
-
-        // NAVBAR
-        const Navbar = () => {
-            return (
-                <nav className="fixed top-4 w-[95%] max-w-[1400px] z-50 glass-nav rounded-2xl transition-all duration-300">
-                <div className="px-6 h-16 md:h-20 flex items-center justify-center relative">
-                    <img 
-                    src="https://i.ibb.co/kNsvsJx/Logo-Woca-Grande.png" 
-                    alt="Woca Logo" 
-                    className="h-8 md:h-10 object-contain opacity-90 hover:opacity-100 transition-opacity" 
-                    />
-                </div>
-                </nav>
-            );
+        // --- ICONS ---
+        const Icons = {
+            TrendingUp: () => <svg className="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>,
+            Users: () => <svg className="w-5 h-5 text-[#2542AB]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>,
+            Zap: () => <svg className="w-5 h-5 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
         };
 
-        // HERO
-        const Hero = () => {
-            return (
-                <section className="flex flex-col lg:flex-row items-center lg:items-start justify-between gap-8 lg:gap-8">
-                {/* Left Column: Branding & Copy & Animated Logo */}
-                {/* Updated to Flex Row on Desktop to place logo beside text */}
-                <div className="w-full lg:w-[45%] flex flex-col lg:flex-row items-center lg:items-start gap-6 pt-4 lg:pt-8 pl-0 lg:pl-10 slide-up relative">
-                    
-                    {/* ANIMATED LOGO SVG - Left Side */}
-                    <div className="hidden lg:block w-[140px] shrink-0 sticky top-24 opacity-90">
-                        <svg viewBox="0 0 69 64" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-auto">
-                            <defs>
-                                <linearGradient id="paint0_linear_hero" x1="21.5962" y1="24.2005" x2="46.2308" y2="24.2005" gradientUnits="userSpaceOnUse">
-                                    <stop stopColor="#DD520C"/>
-                                    <stop offset="1" stopColor="#2542AB"/>
-                                </linearGradient>
-                            </defs>
-                            <g className="logo-draw-path">
-                                <path d="M65 56.001H12.6006C10.8191 56.0007 9.34772 54.5298 9.34766 52.7344V51.5449L14.6035 48.3779H63.0586V10.3262H65V56.001ZM57.2656 0C59.0499 0 60.5186 1.47102 60.5186 3.2666V45.8203H13.9053L4 51.7852V5.96484L13.8291 0.0380859V0H57.2656Z" fill="none" stroke="url(#paint0_linear_hero)" strokeWidth="0.8" />
-                                <path d="M21.5962 37.7766L29.6074 23.262L21.8966 10.6245H29.7076L34.5143 18.4349L38.57 10.6245H45.5298L38.1194 24.5358L46.2308 37.7766H38.52L33.2125 29.2287L28.556 37.7766H21.5962Z" fill="none" stroke="url(#paint0_linear_hero)" strokeWidth="0.8" />
-                            </g>
-                        </svg>
-                    </div>
+        const Header = () => (
+            <div className="flex flex-col md:flex-row justify-between items-center mb-8 glass-card !py-4 !px-8 gap-4">
+                <div className="flex items-center gap-4">
+                    <img src="https://i.ibb.co/kNsvsJx/Logo-Woca-Grande.png" alt="Woca Logo" className="h-8 object-contain" />
+                    <div className="hidden md:block h-6 w-px bg-gray-300"></div>
+                    <h1 className="text-xl font-bold text-gray-800">
+                        Dashboard <span className="text-gradient">Expert</span>
+                    </h1>
+                </div>
+                <div className="flex items-center gap-4 text-sm font-medium text-gray-500">
+                    <span className="bg-white/80 px-3 py-1 rounded-full shadow-sm border border-white whitespace-nowrap">
+                        📅 Relatório: 19/02/2026
+                    </span>
+                    <span className="bg-[#2542AB]/10 text-[#2542AB] px-3 py-1 rounded-full flex items-center gap-2 whitespace-nowrap">
+                        <span className="w-2 h-2 bg-[#2542AB] rounded-full animate-pulse"></span>
+                        Campanha Ativa
+                    </span>
+                </div>
+            </div>
+        );
 
-                    <div className="flex flex-col items-center lg:items-start text-center lg:text-left">
-                        {/* Badge Lançamento */}
-                        <div className="bg-white/80 backdrop-blur-sm border border-white px-4 py-1.5 rounded-full mb-6 shadow-sm inline-flex items-center gap-2">
-                            <span className="w-2 h-2 rounded-full bg-[#DD520C]"></span>
-                            <span className="text-xs font-bold text-[#2542AB] tracking-wide uppercase">Lançamento Oficial</span>
-                        </div>
-
-                        <div className="flex items-center gap-4 mb-2 justify-center lg:justify-start">
-                            <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight text-[#121212]">
-                                Woca <span className="text-expert-highlight relative pb-1 border-b-4 border-[#2542AB]/20">Expert</span>
-                            </h1>
-                        </div>
-
-                        <h2 className="text-lg md:text-xl text-gray-900 font-bold mt-6 mb-3">
-                            A maior evolução do Woca de todos os tempos.
-                        </h2>
-
-                        <p className="text-sm md:text-base text-gray-500 leading-relaxed max-w-lg">
-                            Importe plantas de CAD, automatize processos e, como sempre, crie projetos elétricos online de forma simples, rápida e customizável.
-                        </p>
+        const KPICard = ({ title, value, subtext, icon: Icon, trend }) => (
+            <div className="glass-card flex flex-col justify-between h-full min-h-[140px]">
+                <div className="flex justify-between items-start">
+                    <span className="text-gray-500 text-sm font-semibold uppercase tracking-wider">{title}</span>
+                    <div className="p-2 bg-white rounded-lg shadow-sm text-gray-600">
+                        <Icon />
                     </div>
                 </div>
-
-                {/* Right Column: Pricing Cards */}
-                <div id="pricing-section" className="w-full lg:w-[50%] grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6 slide-up delay-100 pr-0 lg:pr-10 pt-4 lg:pt-0">
-                    
-                    {/* Card 3 Meses */}
-                    <div className="pricing-card p-6 flex flex-col justify-between h-full relative group border border-transparent hover:border-gray-200 bg-white shadow-[0_10px_40px_-5px_rgba(37,66,171,0.08)] rounded-[24px] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_50px_-10px_rgba(37,66,171,0.15)]">
-                        <div>
-                            <h3 className="text-xl font-bold text-gray-900 mb-4">3 Meses</h3>
-                            <div className="mb-4">
-                                <p className="text-[10px] text-gray-500 mb-1 font-medium uppercase tracking-wide">Em até 3x de</p>
-                                <div className="flex items-start leading-none gap-0.5">
-                                    <span className="price-super">R$</span>
-                                    <span className="price-main">125</span>
-                                    <span className="price-cents">,97</span>
-                                </div>
-                                <p className="text-xs font-bold text-[#2542AB] mt-1">sem juros</p>
-                            </div>
-                            <div className="w-full h-px bg-gray-100 my-4"></div>
-                            <div className="border-gradient mb-5">
-                                <div className="bg-white rounded-[10px] p-3 flex flex-col gap-1">
-                                    <div className="flex justify-between items-center">
-                                        <div className="flex items-center gap-1.5 text-gray-400">
-                                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1-1H5a1 1 0 00-1-1H5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"></path></svg>
-                                            <span className="text-[9px] font-bold tracking-widest uppercase">À vista no PIX</span>
-                                        </div>
-                                        <span className="badge-gradient text-white text-[10px] font-bold px-2 py-1 rounded shadow-sm tracking-wide">DESCONTO À VISTA</span>
-                                    </div>
-                                    <p className="text-lg font-bold text-gray-900">R$ 366,56</p>
-                                </div>
-                            </div>
-                            <ul className="space-y-3 mb-6">
-                                {[
-                                    "Importações ilimitadas de arquivos DXF",
-                                    "Todas as automações de elétrica",
-                                    "Edição de elementos na planta após a importação"
-                                ].map((item, idx) => (
-                                    <li key={idx} className="flex items-start gap-3">
-                                    <div className="w-4 h-4 rounded-full bg-blue-50 flex items-center justify-center flex-shrink-0 mt-0.5">
-                                        <svg className="w-2.5 h-2.5 text-[#2542AB]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"></path></svg>
-                                    </div>
-                                    <span className="text-xs text-gray-600 leading-tight">{item}</span>
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-                        <button className="w-full py-3 rounded-lg bg-[#ee594a] text-white font-bold text-sm hover:bg-[#d64b3d] transition-colors shadow-lg hover:shadow-[#ee594a]/30">
-                            Selecionar Plano
-                        </button>
-                    </div>
-
-                    {/* Card 6 Meses */}
-                    <div className="pricing-card p-6 flex flex-col justify-between h-full relative group border border-transparent hover:border-gray-200 bg-white shadow-[0_10px_40px_-5px_rgba(37,66,171,0.08)] rounded-[24px] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_50px_-10px_rgba(37,66,171,0.15)] mt-6 md:mt-0">
-                        <div className="floating-badge">ECONOMIZE 22% NA MENSALIDADE</div>
-                        <div>
-                            <h3 className="text-xl font-bold text-gray-900 mb-4">6 Meses</h3>
-                            <div className="mb-4">
-                                <p className="text-[10px] text-gray-500 mb-1 font-medium uppercase tracking-wide">Em até 6x de</p>
-                                <div className="flex items-start leading-none gap-0.5">
-                                    <span className="price-super">R$</span>
-                                    <span className="price-main">97</span>
-                                    <span className="price-cents">,99</span>
-                                </div>
-                                <p className="text-xs font-bold text-[#2542AB] mt-1">sem juros</p>
-                            </div>
-                            <div className="w-full h-px bg-gray-100 my-4"></div>
-                            <div className="border-gradient mb-5">
-                                <div className="bg-white rounded-[10px] p-3 flex flex-col gap-1">
-                                    <div className="flex justify-between items-center">
-                                        <div className="flex items-center gap-1.5 text-gray-400">
-                                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1-1H5a1 1 0 00-1-1H5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"></path></svg>
-                                            <span className="text-[9px] font-bold tracking-widest uppercase">À vista no PIX</span>
-                                        </div>
-                                        <span className="badge-gradient text-white text-[10px] font-bold px-2 py-1 rounded shadow-sm tracking-wide">DESCONTO À VISTA</span>
-                                    </div>
-                                    <p className="text-lg font-bold text-gray-900">R$ 570,28</p>
-                                </div>
-                            </div>
-                            <ul className="space-y-3 mb-6">
-                                {[
-                                    "Importações ilimitadas de arquivos DXF",
-                                    "Todas as automações de elétrica",
-                                    "Edição de elementos na planta após a importação"
-                                ].map((item, idx) => (
-                                    <li key={idx} className="flex items-start gap-3">
-                                    <div className="w-4 h-4 rounded-full bg-blue-50 flex items-center justify-center flex-shrink-0 mt-0.5">
-                                        <svg className="w-2.5 h-2.5 text-[#2542AB]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"></path></svg>
-                                    </div>
-                                    <span className="text-xs text-gray-600 leading-tight">{item}</span>
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-                        <button className="w-full py-3 rounded-lg bg-[#ee594a] text-white font-bold text-sm hover:bg-[#d64b3d] transition-colors shadow-lg hover:shadow-[#ee594a]/30">
-                            Selecionar Plano
-                        </button>
+                <div>
+                    <h2 className="text-4xl font-extrabold text-gray-900 mt-2">{value}</h2>
+                    <div className="flex items-center gap-2 mt-1">
+                        {trend && <span className="text-xs font-bold text-green-600 bg-green-100 px-1.5 py-0.5 rounded flex items-center gap-1">{trend} <Icons.TrendingUp /></span>}
+                        <p className="text-xs text-gray-500 font-medium">{subtext}</p>
                     </div>
                 </div>
-                </section>
-            );
-        };
+            </div>
+        );
 
-        // VIDEO SECTION
-        const VideoSection = () => {
-            return (
-                <section className="w-full flex flex-col items-center gap-16 mb-16 max-w-7xl mx-auto relative">
-                    {/* Video Container */}
-                    <div className="w-full flex flex-col items-center slide-up delay-200 z-10">
-                        <div className="w-full max-w-5xl aspect-video rounded-[32px] overflow-hidden shadow-2xl bg-black relative group border border-white/20">
-                            <iframe 
-                                className="w-full h-full object-cover z-0" 
-                                src="https://www.youtube.com/embed/dQw4w9WgXcQ?si=placeholder" 
-                                title="YouTube video player" 
-                                frameBorder="0" 
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                                allowFullScreen 
-                            />
-                            <div className="absolute inset-0 border border-white/10 rounded-[32px] pointer-events-none z-10"></div>
-                        </div>
-
-                        {/* Video Caption */}
-                        <div className="mt-6 flex items-center gap-3 bg-white/60 backdrop-blur-md px-6 py-3 rounded-full border border-white/50 shadow-sm transition-transform hover:scale-105 cursor-default">
-                            <span className="relative flex h-3 w-3">
-                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                                <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
-                            </span>
-                            <p className="text-sm font-medium text-gray-800">
-                                Renan Santos, <span className="text-gray-500 font-normal">Engenheiro Eletricista do Woca</span>
-                            </p>
-                        </div>
-                    </div>
-
-                    {/* Wrapper for Title + Cards + Circuit Lines */}
-                    <div className="w-full relative flex flex-col items-center">
-                         
-                        {/* Circuit Lines Background (Desktop only for precision) */}
-                        <div className="absolute top-0 left-0 w-full h-full -z-10 hidden lg:block opacity-30 pointer-events-none">
-                            <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
-                                <defs>
-                                    <linearGradient id="circuit-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                                        <stop offset="0%" stopColor="#DD520C" stopOpacity="0" />
-                                        <stop offset="20%" stopColor="#DD520C" stopOpacity="0.8" />
-                                        <stop offset="100%" stopColor="#2542AB" stopOpacity="0.2" />
-                                    </linearGradient>
-                                </defs>
-                                {/* Main central line down from video area */}
-                                <path d="M50,0 V15" stroke="url(#circuit-gradient)" strokeWidth="0.15" fill="none" className="circuit-path" />
-                                
-                                {/* Branching to columns */}
-                                <path d="M50,15 H13 V100" stroke="url(#circuit-gradient)" strokeWidth="0.15" fill="none" className="circuit-path" style={{animationDelay: '0.2s'}} />
-                                <path d="M50,15 H38 V100" stroke="url(#circuit-gradient)" strokeWidth="0.15" fill="none" className="circuit-path" style={{animationDelay: '0.4s'}} />
-                                <path d="M50,15 H62 V100" stroke="url(#circuit-gradient)" strokeWidth="0.15" fill="none" className="circuit-path" style={{animationDelay: '0.6s'}} />
-                                <path d="M50,15 H87 V100" stroke="url(#circuit-gradient)" strokeWidth="0.15" fill="none" className="circuit-path" style={{animationDelay: '0.8s'}} />
-                            </svg>
-                        </div>
-
-                        {/* Section Title */}
-                        <div className="text-center max-w-3xl mx-auto px-4 mt-8 mb-12 relative z-10">
-                            <h2 className="text-3xl md:text-5xl font-extrabold text-[#121212] mb-6 tracking-tight leading-tight">
-                            Esqueça o jeito antigo de projetar
-                            </h2>
-                            <p className="text-lg text-gray-500 font-medium">
-                            Veja como o Woca Expert transforma horas de trabalho manual em minutos de automação inteligente.
-                            </p>
-                        </div>
-
-                        {/* Enhanced Feature Grid (Glass Cards) */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 w-full px-4 relative z-10">
-                            
-                            {/* Card 1: Rapidez */}
-                            <div className="group relative p-1 rounded-[32px] transition-all duration-500 hover:scale-[1.02]">
-                                <div className="absolute inset-0 bg-gradient-to-br from-[#DD520C] to-[#2542AB] rounded-[32px] opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-sm"></div>
-                                
-                                <div className="relative h-full bg-white/40 backdrop-blur-xl border border-white/60 rounded-[28px] p-8 flex flex-col gap-6 hover:bg-white/70 transition-colors shadow-lg shadow-blue-900/5">
-                                    <div className="w-16 h-16 rounded-2xl bg-white shadow-md flex items-center justify-center text-[#2542AB] group-hover:scale-110 transition-transform duration-500 group-hover:text-[#DD520C]">
-                                            {/* Ícone Rapidez (Raio) */}
-                                            <svg className="w-8 h-8 draw-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-                                    </div>
-                                    <div>
-                                        <h3 className="text-xl font-bold text-gray-900 mb-3">Rapidez</h3>
-                                        <p className="text-sm text-gray-600 leading-relaxed font-medium">
-                                            O tempo desenhando planta não existe mais. Deixe o Woca fazer a leitura inteligente.
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Card 2: Simplicidade */}
-                            <div className="group relative p-1 rounded-[32px] transition-all duration-500 hover:scale-[1.02]">
-                                <div className="absolute inset-0 bg-gradient-to-br from-[#DD520C] to-[#2542AB] rounded-[32px] opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-sm"></div>
-                                
-                                <div className="relative h-full bg-white/40 backdrop-blur-xl border border-white/60 rounded-[28px] p-8 flex flex-col gap-6 hover:bg-white/70 transition-colors shadow-lg shadow-blue-900/5">
-                                    <div className="w-16 h-16 rounded-2xl bg-white shadow-md flex items-center justify-center text-[#2542AB] group-hover:scale-110 transition-transform duration-500 group-hover:text-[#DD520C]">
-                                            {/* Ícone Simplicidade (Smile) */}
-                                            <svg className="w-8 h-8 draw-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" strokeWidth="2"></circle><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 14s1.5 2 4 2 4-2 4-2"></path><line x1="9" y1="9" x2="9.01" y2="9" strokeWidth="3" strokeLinecap="round"></line><line x1="15" y1="9" x2="15.01" y2="9" strokeWidth="3" strokeLinecap="round"></line></svg>
-                                    </div>
-                                    <div>
-                                        <h3 className="text-xl font-bold text-gray-900 mb-3">Simplicidade</h3>
-                                        <p className="text-sm text-gray-600 leading-relaxed font-medium">
-                                            Menos cliques. Sua planta precisa de pouquíssimos ajustes para o projeto final.
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Card 3: Praticidade */}
-                            <div className="group relative p-1 rounded-[32px] transition-all duration-500 hover:scale-[1.02]">
-                                <div className="absolute inset-0 bg-gradient-to-br from-[#DD520C] to-[#2542AB] rounded-[32px] opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-sm"></div>
-                                
-                                <div className="relative h-full bg-white/40 backdrop-blur-xl border border-white/60 rounded-[28px] p-8 flex flex-col gap-6 hover:bg-white/70 transition-colors shadow-lg shadow-blue-900/5">
-                                    <div className="w-16 h-16 rounded-2xl bg-white shadow-md flex items-center justify-center text-[#2542AB] group-hover:scale-110 transition-transform duration-500 group-hover:text-[#DD520C]">
-                                            {/* Ícone Praticidade (Layout) */}
-                                            <svg className="w-8 h-8 draw-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2" strokeWidth="2"></rect><line x1="3" y1="9" x2="21" y2="9" strokeWidth="2"></line><line x1="9" y1="21" x2="9" y2="9" strokeWidth="2"></line></svg>
-                                    </div>
-                                    <div>
-                                        <h3 className="text-xl font-bold text-gray-900 mb-3">Praticidade</h3>
-                                        <p className="text-sm text-gray-600 leading-relaxed font-medium">
-                                            Importe, automatize e gere orçamentos em uma interface totalmente intuitiva.
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Card 4: Acessibilidade */}
-                            <div className="group relative p-1 rounded-[32px] transition-all duration-500 hover:scale-[1.02]">
-                                <div className="absolute inset-0 bg-gradient-to-br from-[#DD520C] to-[#2542AB] rounded-[32px] opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-sm"></div>
-                                
-                                <div className="relative h-full bg-white/40 backdrop-blur-xl border border-white/60 rounded-[28px] p-8 flex flex-col gap-6 hover:bg-white/70 transition-colors shadow-lg shadow-blue-900/5">
-                                    <div className="w-16 h-16 rounded-2xl bg-white shadow-md flex items-center justify-center text-[#2542AB] group-hover:scale-110 transition-transform duration-500 group-hover:text-[#DD520C]">
-                                            {/* Ícone Acessibilidade (Globo) */}
-                                            <svg className="w-8 h-8 draw-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" strokeWidth="2"></circle><line x1="2" y1="12" x2="22" y2="12" strokeWidth="2"></line><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
-                                    </div>
-                                    <div>
-                                        <h3 className="text-xl font-bold text-gray-900 mb-3">Acessibilidade</h3>
-                                        <p className="text-sm text-gray-600 leading-relaxed font-medium">
-                                            Acesso direto pelo navegador, rodando liso até mesmo em máquinas mais simples.
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                </section>
-            );
-        };
-
-        // --- FEATURES SECTION ---
-        const FeaturesSection = () => {
-            const categories = [
-                {
-                    title: "Essenciais",
-                    icon: <BoxIcon className="w-6 h-6 text-[#2542AB]" />,
-                    items: [
-                        "Desenho da planta baixa", "Projetos ilimitados", "Suporte", "Projeto com dois pavimentos",
-                        "Caixa de passagem", "Compatibilidade com celulares e tablet", "Customização do ponto elétrico",
-                        "Customização do orçamento", "Escada"
-                    ]
-                },
-                {
-                    title: "Automações",
-                    icon: <ZapIcon className="w-6 h-6 text-[#DD520C]" />,
-                    items: [
-                        "Lançamento automático de pontos elétricos", "Lançamento automático de eletrodutos",
-                        "Dimensionamento automático da fiação e condutos", "Quadro de cargas", "Lista de materiais",
-                        "Quadro geral (QGBT)", "3 Quadros parciais", "DRs ilimitados", "DPS", "Diagrama Unifilar"
-                    ]
-                },
-                {
-                    title: "Impressão / Exportações",
-                    icon: <PrinterIcon className="w-6 h-6 text-[#2542AB]" />,
-                    items: [
-                        "Múltiplas pranchas(folhas) de impressão", "Impressão em escala (PDF)",
-                        "Detalhamento de Projetos em perspectiva 3D", "Planilha do quadro de cargas",
-                        "Planilha da lista de materiais"
-                    ]
-                },
-                {
-                    title: "Propriedades de Circuitos",
-                    icon: <SlidersIcon className="w-6 h-6 text-[#DD520C]" />,
-                    items: [
-                        "Balanceamento de fases manual", "Edição do fator de demanda", "Edição de capacidade mínima do disjuntor",
-                        "Edição da seção mínima de um condutor", "Edição dos nomes dos circuitos"
-                    ]
-                },
-                {
-                    title: "Avançadas",
-                    icon: <StarIcon className="w-6 h-6 text-[#2542AB]" />,
-                    items: [
-                        "Fiação Manual", "3 Pontos trifásicos por projeto", "Iluminação tubular", "Sensor de presença",
-                        "CFTV - circuito fechado de televisão", "Interruptores Bipolar e Bipolar Three Way",
-                        "Legenda de Fiação", "Fita LED"
-                    ]
-                }
-            ];
-
-            return (
-                <section className="w-full max-w-7xl mx-auto px-4 relative z-10 flex flex-col items-center">
-                    
-                    {/* Header */}
-                    <div className="text-center max-w-3xl mb-12">
-                         <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/50 backdrop-blur border border-white/60 shadow-sm mb-4">
-                            <span className="w-2 h-2 rounded-full bg-[#2542AB] animate-pulse"></span>
-                            <span className="text-xs font-bold text-[#2542AB] uppercase tracking-wider">Funcionalidades Completas</span>
-                        </div>
-                        <h2 className="text-3xl md:text-5xl font-extrabold text-[#121212] mb-4">
-                            O poder de um software completo
-                        </h2>
-                        <p className="text-lg text-gray-500">
-                            Tudo o que você precisa para entregar projetos elétricos profissionais.
-                        </p>
-                    </div>
-
-                    {/* Bento Grid */}
-                    <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-6">
-                        
-                        {/* FEATURE HIGHLIGHT: DXF IMPORT */}
-                        <div className="col-span-1 md:col-span-2 lg:col-span-6 relative overflow-hidden rounded-[32px] bg-gradient-to-r from-[#1E293B] to-[#0F172A] text-white shadow-2xl group border border-gray-700">
-                             {/* Scanning Line Animation */}
-                            <div className="scanner-line"></div>
-                            
-                            <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-[#2542AB] opacity-20 blur-[100px] rounded-full translate-x-1/2 -translate-y-1/2"></div>
-
-                            <div className="relative p-8 md:p-12 flex flex-col md:flex-row items-center md:items-start justify-between gap-8 z-10">
-                                <div className="flex flex-col items-center md:items-start text-center md:text-left">
-                                    <div className="w-16 h-16 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center mb-6 border border-white/20 shadow-inner">
-                                        <FileScanIcon className="w-8 h-8 text-[#DD520C]" />
-                                    </div>
-                                    <h3 className="text-2xl md:text-4xl font-bold mb-4 leading-tight">
-                                        Importação ilimitada de <br className="hidden md:block"/> plantas baixas em DXF
-                                    </h3>
-                                    <p className="text-gray-300 text-sm md:text-base max-w-xl leading-relaxed">
-                                        O recurso mais aguardado do plano Expert. Traga seus desenhos técnicos diretamente das principais ferramentas de CAD e deixe a inteligência do Woca acelerar seu trabalho.
-                                    </p>
-                                </div>
-                                {/* Visual representation of a file */}
-                                <div className="relative w-full max-w-xs aspect-[4/3] bg-white/5 rounded-xl border border-white/10 p-4 flex flex-col gap-3 rotate-3 group-hover:rotate-0 transition-transform duration-500">
-                                    <div className="w-full h-2 bg-white/20 rounded-full w-3/4"></div>
-                                    <div className="w-full h-2 bg-white/10 rounded-full"></div>
-                                    <div className="w-full h-2 bg-white/10 rounded-full w-5/6"></div>
-                                    <div className="flex-1 border border-dashed border-white/20 rounded-lg flex items-center justify-center">
-                                        <span className="text-xs font-mono text-white/50"> planta_baixa_final.dxf </span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* CATEGORY CARDS */}
-                        {/* 2 Big cards on top row (Essenciais & Automações) */}
-                        <div className="col-span-1 md:col-span-1 lg:col-span-3 feature-card-glass rounded-[24px] p-6 md:p-8 flex flex-col gap-6 h-full">
-                            <div className="flex items-center gap-4 border-b border-gray-100 pb-4">
-                                <div className="p-2.5 rounded-xl bg-white shadow-sm border border-gray-100">
-                                    {categories[0].icon}
-                                </div>
-                                <h4 className="text-xl font-bold text-gray-800">{categories[0].title}</h4>
-                            </div>
-                            <ul className="flex flex-col gap-3">
-                                {categories[0].items.map((item, itemIdx) => (
-                                    <li key={itemIdx} className="flex items-start gap-3 group/item">
-                                        <div className="mt-1 w-4 h-4 rounded-full border border-green-500/30 bg-green-50 flex items-center justify-center shrink-0">
-                                            <svg className="w-2.5 h-2.5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" />
-                                            </svg>
-                                        </div>
-                                        <span className="text-sm font-medium text-gray-600 group-hover/item:text-gray-900 transition-colors">
-                                            {item}
-                                        </span>
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-
-                        <div className="col-span-1 md:col-span-1 lg:col-span-3 feature-card-glass rounded-[24px] p-6 md:p-8 flex flex-col gap-6 h-full">
-                             <div className="flex items-center gap-4 border-b border-gray-100 pb-4">
-                                <div className="p-2.5 rounded-xl bg-white shadow-sm border border-gray-100">
-                                    {categories[1].icon}
-                                </div>
-                                <h4 className="text-xl font-bold text-gray-800">{categories[1].title}</h4>
-                            </div>
-                            <ul className="flex flex-col gap-3">
-                                {categories[1].items.map((item, itemIdx) => (
-                                    <li key={itemIdx} className="flex items-start gap-3 group/item">
-                                        <div className="mt-1 w-4 h-4 rounded-full border border-green-500/30 bg-green-50 flex items-center justify-center shrink-0">
-                                            <svg className="w-2.5 h-2.5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" />
-                                            </svg>
-                                        </div>
-                                        <span className="text-sm font-medium text-gray-600 group-hover/item:text-gray-900 transition-colors">
-                                            {item}
-                                        </span>
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-
-                        {/* 3 Smaller cards on bottom row */}
-                        <div className="col-span-1 md:col-span-1 lg:col-span-2 feature-card-glass rounded-[24px] p-6 md:p-8 flex flex-col gap-6 h-full">
-                            <div className="flex items-center gap-4 border-b border-gray-100 pb-4">
-                                <div className="p-2.5 rounded-xl bg-white shadow-sm border border-gray-100">
-                                    {categories[2].icon}
-                                </div>
-                                <h4 className="text-xl font-bold text-gray-800">{categories[2].title}</h4>
-                            </div>
-                            <ul className="flex flex-col gap-3">
-                                {categories[2].items.map((item, itemIdx) => (
-                                    <li key={itemIdx} className="flex items-start gap-3 group/item">
-                                        <div className="mt-1 w-4 h-4 rounded-full border border-green-500/30 bg-green-50 flex items-center justify-center shrink-0">
-                                            <svg className="w-2.5 h-2.5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" />
-                                            </svg>
-                                        </div>
-                                        <span className="text-sm font-medium text-gray-600 group-hover/item:text-gray-900 transition-colors">
-                                            {item}
-                                        </span>
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-
-                        <div className="col-span-1 md:col-span-1 lg:col-span-2 feature-card-glass rounded-[24px] p-6 md:p-8 flex flex-col gap-6 h-full">
-                            <div className="flex items-center gap-4 border-b border-gray-100 pb-4">
-                                <div className="p-2.5 rounded-xl bg-white shadow-sm border border-gray-100">
-                                    {categories[3].icon}
-                                </div>
-                                <h4 className="text-xl font-bold text-gray-800">{categories[3].title}</h4>
-                            </div>
-                            <ul className="flex flex-col gap-3">
-                                {categories[3].items.map((item, itemIdx) => (
-                                    <li key={itemIdx} className="flex items-start gap-3 group/item">
-                                        <div className="mt-1 w-4 h-4 rounded-full border border-green-500/30 bg-green-50 flex items-center justify-center shrink-0">
-                                            <svg className="w-2.5 h-2.5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" />
-                                            </svg>
-                                        </div>
-                                        <span className="text-sm font-medium text-gray-600 group-hover/item:text-gray-900 transition-colors">
-                                            {item}
-                                        </span>
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-
-                        <div className="col-span-1 md:col-span-2 lg:col-span-2 feature-card-glass rounded-[24px] p-6 md:p-8 flex flex-col gap-6 h-full">
-                            <div className="flex items-center gap-4 border-b border-gray-100 pb-4">
-                                <div className="p-2.5 rounded-xl bg-white shadow-sm border border-gray-100">
-                                    {categories[4].icon}
-                                </div>
-                                <h4 className="text-xl font-bold text-gray-800">{categories[4].title}</h4>
-                            </div>
-                            <ul className="flex flex-col gap-3">
-                                {categories[4].items.map((item, itemIdx) => (
-                                    <li key={itemIdx} className="flex items-start gap-3 group/item">
-                                        <div className="mt-1 w-4 h-4 rounded-full border border-green-500/30 bg-green-50 flex items-center justify-center shrink-0">
-                                            <svg className="w-2.5 h-2.5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" />
-                                            </svg>
-                                        </div>
-                                        <span className="text-sm font-medium text-gray-600 group-hover/item:text-gray-900 transition-colors">
-                                            {item}
-                                        </span>
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-
-                    </div>
-                </section>
-            );
-        };
-
-        // FAQ ITEM
-        const FAQItem = ({ question, answer }) => {
-            const [isOpen, setIsOpen] = React.useState(false);
-
-            return (
-                <div className="border-b border-gray-200 last:border-0">
-                    <button 
-                        className="w-full py-6 flex items-center justify-between text-left focus:outline-none group"
-                        onClick={() => setIsOpen(!isOpen)}
-                    >
-                        <span className={`text-lg font-medium transition-colors ${isOpen ? 'text-[#2542AB]' : 'text-gray-800 group-hover:text-[#2542AB]'}`}>
-                            {question}
-                        </span>
-                        <span className={`p-2 rounded-full transition-colors ${isOpen ? 'bg-blue-50 text-[#2542AB]' : 'bg-transparent text-gray-400'}`}>
-                            {isOpen ? <ChevronUpIcon className="w-5 h-5" /> : <ChevronDownIcon className="w-5 h-5" />}
-                        </span>
-                    </button>
+        // Barra de Progresso Estilo Referência (Título - Subtítulo - Barra)
+        const PaymentProgressBar = ({ label, subLabel, value, color, displayValue }) => (
+            <div className="mb-6 last:mb-0">
+                <div className="flex justify-between items-baseline mb-1">
+                    <span className="text-base font-bold text-gray-800">{label}</span>
+                    <span className="text-lg font-bold text-gray-900">{displayValue || `${value}%`}</span>
+                </div>
+                <div className="text-xs text-gray-500 font-medium mb-2">{subLabel}</div>
+                <div className="progress-bar-bg">
                     <div 
-                        className={`overflow-hidden transition-all duration-300 ease-in-out ${isOpen ? 'max-h-96 opacity-100 mb-6' : 'max-h-0 opacity-0'}`}
-                    >
-                        <p className="text-gray-500 leading-relaxed pr-8">
-                            {answer}
-                        </p>
-                    </div>
+                        className="progress-bar-fill shadow-sm" 
+                        style={{ width: `${value}%`, backgroundColor: color }}
+                    ></div>
                 </div>
-            );
-        };
+            </div>
+        );
 
-        // FAQ SECTION
-        const FAQSection = () => {
-            const faqs = [
-                {
-                    question: "O Woca Expert roda em qualquer computador?",
-                    answer: "Sim! O Woca é 100% baseado em navegador. Se você consegue navegar na internet, você consegue criar projetos incríveis no Woca, sem precisar de placas de vídeo caras ou processadores de última geração."
-                },
-                {
-                    question: "Consigo importar meus arquivos DXF?",
-                    answer: "Com certeza. O plano Expert foi desenhado especificamente para isso. Você importa sua planta baixa em DXF, o Woca interpreta as paredes e camadas, você pode definir com exatidão os compartimentos e aproveitar todos os recursos do nosso software."
-                },
-                {
-                    question: "Quais são as formas de pagamento?",
-                    answer: "Aceitamos cartão de crédito em até 6x no plano semestral e 3x no trimestral, sem juros. Além disso, você pode pagar à vista no PIX com um desconto especial."
-                },
-                {
-                    question: "Tenho suporte se tiver dúvidas?",
-                    answer: "Sim, todos os assinantes Expert tem acesso ao nosso canal de suporte dedicado através do chat online no site do Woca, além da nossa base de conhecimento em vídeo no YouTube."
-                }
+        const SplitBar = ({ label, total, trimestral, semestral }) => (
+            <div className="mb-4 last:mb-0">
+                <div className="flex justify-between items-end mb-1">
+                    <span className="text-sm font-bold text-gray-700">{label}</span>
+                    <span className="text-xs font-bold text-gray-400">Total: {total}</span>
+                </div>
+                <div className="flex w-full h-3 rounded-full overflow-hidden bg-gray-100">
+                    <div className="bg-[#DD520C]" style={{ width: `${(trimestral/total)*100}%` }}></div>
+                    <div className="bg-[#2542AB]" style={{ width: `${(semestral/total)*100}%` }}></div>
+                </div>
+                <div className="flex justify-between mt-1 text-[10px] font-semibold">
+                    <span className="text-[#DD520C]">{trimestral > 0 ? `${trimestral} Trimestral` : ''}</span>
+                    <span className="text-[#2542AB]">{semestral > 0 ? `${semestral} Semestral` : ''}</span>
+                </div>
+            </div>
+        );
+
+        const Dashboard = () => {
+            // DADOS ATUALIZADOS (19/02/2026)
+            
+            // KPI TOPO
+            const totalVendas = 24;
+            const vendasOntem = 4; // 18/02
+            
+            const receitaTotal = "R$ 10.339,92";
+            const receitaOntem = "R$ 1.681,30";
+
+            // --- JORNADA DETALHADA ---
+            const channels = [
+                { name: "Direto / Orgânico", count: 10, color: "#10b981" },
+                { name: "Pop-up área logada", count: 4, color: "#DD520C" },
+                { name: "Comercial", count: 3, color: "#8b5cf6" },
+                { name: "LP (sem referrer)", count: 3, color: "#2542AB" },
+                { name: "Pop-up área deslogada", count: 1, color: "#f59e0b" },
+                { name: "E-mail Mkt", count: 1, color: "#ec4899" },
+                { name: "Vídeo Youtube", count: 1, color: "#f43f5e" },
+                { name: "WhatsApp", count: 1, color: "#0ea5e9" }
             ];
 
-            const scrollToPricing = () => {
-                const pricingSection = document.getElementById('pricing-section');
-                if (pricingSection) {
-                    pricingSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
-            };
-
             return (
-                <section className="w-full max-w-4xl mx-auto flex flex-col items-center mb-16 px-4">
-                    <h2 className="text-3xl font-bold text-[#121212] mb-10 text-center">Perguntas Frequentes</h2>
-                    
-                    <div className="w-full max-w-3xl bg-white rounded-3xl p-8 shadow-lg border border-gray-100 mb-20">
-                        {faqs.map((faq, index) => (
-                            <FAQItem key={index} question={faq.question} answer={faq.answer} />
-                        ))}
-                    </div>
+                <div className="max-w-[1400px] mx-auto pb-10">
+                    <Header />
 
-                    {/* CTAs */}
-                    <div className="w-full flex flex-col items-center gap-8">
-                        {/* Primary CTA: Buy/Convert */}
-                        <div className="w-full bg-gradient-to-r from-[#e06141] to-[#e14081] rounded-[32px] p-8 md:p-12 text-center text-white shadow-2xl relative overflow-hidden group">
-                             {/* Abstract Background Decoration */}
-                            <div className="absolute top-0 right-0 w-64 h-64 bg-white opacity-10 rounded-full blur-[80px] translate-x-1/2 -translate-y-1/2 group-hover:opacity-20 transition-opacity"></div>
-                            <div className="absolute bottom-0 left-0 w-48 h-48 bg-[#e06141] opacity-30 rounded-full blur-[60px] -translate-x-1/3 translate-y-1/3"></div>
-
-                            <div className="relative z-10 flex flex-col items-center gap-6">
-                                <h3 className="text-2xl md:text-4xl font-bold leading-tight">
-                                    Revolucione a sua forma de projetar
-                                </h3>
-                                <p className="text-white/90 text-lg max-w-xl">
-                                    Não perca mais tempo com processos manuais. Garanta o Woca Expert e eleve o nível dos seus projetos.
-                                </p>
-                                <button 
-                                    onClick={scrollToPricing}
-                                    className="mt-2 px-10 py-4 bg-[#4cef89] hover:bg-[#42d47a] text-black rounded-xl font-bold text-lg shadow-lg shadow-[#4cef89]/30 transition-all transform hover:-translate-y-1 hover:shadow-xl"
-                                >
-                                    Quero ser Expert agora
-                                </button>
+                    {/* KPI ROW */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+                        <KPICard 
+                            title="Vendas Ontem" 
+                            value={vendasOntem} 
+                            trend="Retomada" 
+                            subtext="vs. dia 17/02 (0 vendas)" 
+                            icon={Icons.Zap} 
+                        />
+                        
+                        {/* Mini Mix de Planos Ontem */}
+                        <div className="glass-card flex flex-col justify-center gap-4">
+                            <h3 className="text-sm font-bold text-gray-500 uppercase tracking-wide mb-1">Mix de Planos (Ontem)</h3>
+                            <div className="flex items-center gap-4">
+                                <div className="flex-1">
+                                    <div className="text-2xl font-bold text-[#DD520C]">3</div>
+                                    <div className="text-xs text-gray-500 font-medium">Trimestral</div>
+                                    <div className="h-1.5 w-full bg-gray-200 rounded-full mt-1 overflow-hidden">
+                                        <div className="h-full bg-[#DD520C]" style={{width: '75%'}}></div>
+                                    </div>
+                                </div>
+                                <div className="w-px h-10 bg-gray-300"></div>
+                                <div className="flex-1">
+                                    <div className="text-2xl font-bold text-[#2542AB]">1</div>
+                                    <div className="text-xs text-gray-500 font-medium">Semestral</div>
+                                    <div className="h-1.5 w-full bg-gray-200 rounded-full mt-1 overflow-hidden">
+                                        <div className="h-full bg-[#2542AB]" style={{width: '25%'}}></div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
-                        {/* Secondary CTA: Support */}
-                        <div className="text-center mt-4">
-                            <h3 className="text-lg font-bold mb-3 text-gray-700">Ainda com dúvida?</h3>
-                            <button className="px-6 py-2.5 rounded-lg border-2 border-[#2542AB]/30 text-[#2542AB] font-bold hover:bg-[#2542AB] hover:text-white transition-colors text-sm hover:border-[#2542AB]">
-                                Falar com consultor no WhatsApp
-                            </button>
+                        <KPICard title="Total Acumulado" value={totalVendas} subtext="Vendas totais (10 a 18/02)" icon={Icons.Users} />
+                        
+                        <div className="glass-card flex flex-col justify-between relative overflow-hidden group">
+                             <div className="absolute top-0 right-0 p-4 opacity-10">
+                                <svg className="w-24 h-24 text-[#2542AB]" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1.41 16.09V20h-2.67v-1.93c-1.71-.36-3.16-1.46-3.27-3.4h1.96c.1 1.05.82 1.87 2.65 1.87 1.96 0 2.4-.98 2.4-1.59 0-.83-.44-1.61-2.67-2.14-2.48-.6-4.18-1.62-4.18-3.67 0-1.72 1.39-2.84 3.11-3.21V4h2.67v1.95c1.86.45 2.79 1.86 2.85 3.39H14.3c-.05-1.11-.64-1.87-2.22-1.87-1.5 0-2.4.68-2.4 1.64 0 .84.65 1.39 2.67 1.91s4.18 1.39 4.18 3.91c-.01 1.83-1.38 2.83-3.12 3.16z"/></svg>
+                             </div>
+                             <span className="text-gray-500 text-sm font-semibold uppercase tracking-wider">Faturamento Total</span>
+                             <div>
+                                <h2 className="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[#DD520C] to-[#2542AB] mt-2">{receitaTotal}</h2>
+                                <div className="mt-2 flex items-center gap-2">
+                                    <span className="text-xs font-bold text-[#2542AB] bg-blue-50 px-2 py-0.5 rounded border border-blue-100">Ontem:</span>
+                                    <span className="text-sm font-bold text-gray-700">{receitaOntem}</span>
+                                </div>
+                             </div>
                         </div>
                     </div>
-                </section>
-            );
-        };
 
-        // FOOTER
-        const Footer = () => {
-            return (
-                <footer className="w-full border-t border-gray-200 bg-white/50 backdrop-blur-sm mt-auto">
-                <div className="max-w-7xl mx-auto px-6 py-12 flex flex-col md:flex-row items-center justify-between gap-6">
-                    <div className="flex flex-col items-center md:items-start gap-2">
-                        <img src="https://i.ibb.co/kNsvsJx/Logo-Woca-Grande.png" alt="Woca" className="h-6 opacity-60 grayscale" />
-                        <p className="text-xs text-gray-400">© 2026 Woca Elétrica por Ocalev</p>
+                    {/* MAIN CONTENT GRID */}
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+                        
+                        {/* COLUNA 1: FINANCEIRO & PLANOS */}
+                        <div className="glass-card flex flex-col gap-6">
+                            <h3 className="text-lg font-bold text-gray-800 border-b border-gray-200 pb-3">Financeiro & Planos</h3>
+                            
+                            {/* Meio de Pagamento Detalhado */}
+                            <div>
+                                <h4 className="text-sm font-semibold text-gray-500 mb-6">Meio de Pagamento</h4>
+                                <div className="space-y-2">
+                                    <PaymentProgressBar 
+                                        label="Cartão de Crédito" 
+                                        subLabel="11 Trimestral • 6 Semestral"
+                                        value={71} 
+                                        color="#DD520C" 
+                                        displayValue="17 (71%)"
+                                    />
+                                    <PaymentProgressBar 
+                                        label="PIX" 
+                                        subLabel="6 Trimestral • 1 Semestral"
+                                        value={29} 
+                                        color="#2542AB" 
+                                        displayValue="7 (29%)"
+                                    />
+                                </div>
+                            </div>
+
+                             {/* Distribuição Total */}
+                             <div className="pt-4 border-t border-gray-200 mt-2">
+                                <h4 className="text-sm font-semibold text-gray-500 mb-3">Distribuição Total de Planos</h4>
+                                <div className="flex w-full h-20 rounded-xl overflow-hidden shadow-sm">
+                                    <div className="bg-[#DD520C] h-full flex flex-col items-center justify-center text-white relative group" style={{width: '71%'}}>
+                                        <span className="text-2xl font-black">71%</span>
+                                        <div className="flex flex-col items-center -mt-1">
+                                            <span className="text-[10px] uppercase font-bold tracking-wider opacity-90">Trimestral</span>
+                                            <span className="text-[9px] font-medium opacity-80">(17)</span>
+                                        </div>
+                                    </div>
+                                    <div className="bg-[#2542AB] h-full flex flex-col items-center justify-center text-white relative group" style={{width: '29%'}}>
+                                        <span className="text-xl font-black">29%</span>
+                                        <div className="flex flex-col items-center -mt-1">
+                                            <span className="text-[10px] uppercase font-bold tracking-wider opacity-90">Semestral</span>
+                                            <span className="text-[9px] font-medium opacity-80">(7)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* COLUNA 2: PERFIL & PROFISSÃO X PLANO */}
+                        <div className="glass-card lg:col-span-2 flex flex-col">
+                            <h3 className="text-lg font-bold text-gray-800 border-b border-gray-200 pb-3 mb-4">Análise de Perfil & Planos</h3>
+                            
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 h-full">
+                                
+                                {/* PROFISSÃO X PLANO */}
+                                <div className="flex flex-col">
+                                    <h4 className="text-sm font-semibold text-gray-500 mb-4">Profissão vs. Plano Escolhido</h4>
+                                    <div className="flex flex-col gap-3">
+                                        <SplitBar label="Engenheiro Civil" total={7} trimestral={5} semestral={2} />
+                                        <SplitBar label="Eletrotécnico" total={7} trimestral={6} semestral={1} />
+                                        <SplitBar label="Eletricista" total={5} trimestral={2} semestral={3} />
+                                        <SplitBar label="Eng. Eletricista" total={4} trimestral={3} semestral={1} />
+                                        <SplitBar label="Estudante" total={1} trimestral={1} semestral={0} />
+                                    </div>
+                                </div>
+
+                                {/* ORIGEM DO USUÁRIO DETALHADA */}
+                                <div className="flex flex-col h-full border-l border-gray-100 pl-0 md:pl-8">
+                                    <h4 className="text-sm font-semibold text-gray-500 mb-4">Gênero & Origem</h4>
+                                    <div className="bg-white/50 rounded-2xl p-4 border border-white h-full flex flex-col justify-start gap-4 shadow-sm">
+                                        
+                                        {/* GÊNERO */}
+                                        <div className="flex items-center gap-2 mb-2 pb-4 border-b border-gray-100">
+                                            <div className="flex-1 bg-blue-50 rounded-lg p-2 flex items-center justify-between border border-blue-100">
+                                                <div className="flex items-center gap-2">
+                                                    <div className="w-6 h-6 rounded-full bg-blue-200 flex items-center justify-center text-blue-700 font-bold text-[10px]">M</div>
+                                                    <span className="text-[10px] font-bold text-gray-600 uppercase">Masculino</span>
+                                                </div>
+                                                <span className="text-sm font-bold text-gray-900">83%</span>
+                                            </div>
+                                            <div className="flex-1 bg-orange-50 rounded-lg p-2 flex items-center justify-between border border-pink-100">
+                                                <div className="flex items-center gap-2">
+                                                    <div className="w-6 h-6 rounded-full bg-orange-200 flex items-center justify-center text-pink-700 font-bold text-[10px]">F</div>
+                                                    <span className="text-[10px] font-bold text-gray-600 uppercase">Feminino</span>
+                                                </div>
+                                                <span className="text-sm font-bold text-gray-900">17%</span>
+                                            </div>
+                                        </div>
+
+                                        <div className="flex flex-col gap-3">
+                                            <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Origem do Usuário</span>
+                                            
+                                            {/* Gratuito (1ª Compra) */}
+                                            <div>
+                                                <div className="flex justify-between text-xs mb-1">
+                                                    <span className="font-bold text-gray-700 flex items-center gap-2">
+                                                        <span className="w-2 h-2 rounded-full bg-green-500"></span> Gratuito (1ª Compra)
+                                                    </span>
+                                                    <span className="font-bold">7 (29%)</span>
+                                                </div>
+                                                <div className="w-full h-2 bg-gray-200 rounded-full"><div className="h-full bg-green-500 rounded-full" style={{width: '29%'}}></div></div>
+                                            </div>
+
+                                            {/* Gratuito (Base/Recorrente) */}
+                                            <div>
+                                                <div className="flex justify-between text-xs mb-1">
+                                                    <span className="font-bold text-gray-700 flex items-center gap-2">
+                                                        <span className="w-2 h-2 rounded-full bg-emerald-300"></span> Gratuito (Com Pagamentos Anteriores)
+                                                    </span>
+                                                    <span className="font-bold">7 (29%)</span>
+                                                </div>
+                                                <div className="w-full h-2 bg-gray-200 rounded-full"><div className="h-full bg-emerald-300 rounded-full" style={{width: '29%'}}></div></div>
+                                            </div>
+
+                                            {/* Upgrade */}
+                                            <div>
+                                                <div className="flex justify-between text-xs mb-1">
+                                                    <span className="font-bold text-gray-700 flex items-center gap-2">
+                                                        <span className="w-2 h-2 rounded-full bg-blue-500"></span> Upgrade (Mensal)
+                                                    </span>
+                                                    <span className="font-bold">5 (21%)</span>
+                                                </div>
+                                                <div className="w-full h-2 bg-gray-200 rounded-full"><div className="h-full bg-blue-500 rounded-full" style={{width: '21%'}}></div></div>
+                                            </div>
+
+                                            {/* Trial */}
+                                            <div>
+                                                <div className="flex justify-between text-xs mb-1">
+                                                    <span className="font-bold text-gray-700 flex items-center gap-2">
+                                                        <span className="w-2 h-2 rounded-full bg-yellow-400"></span> Trial
+                                                    </span>
+                                                    <span className="font-bold">3 (13%)</span>
+                                                </div>
+                                                <div className="w-full h-2 bg-gray-200 rounded-full"><div className="h-full bg-yellow-400 rounded-full" style={{width: '13%'}}></div></div>
+                                            </div>
+
+                                            {/* Upsell */}
+                                            <div>
+                                                <div className="flex justify-between text-xs mb-1">
+                                                    <span className="font-bold text-gray-700 flex items-center gap-2">
+                                                        <span className="w-2 h-2 rounded-full bg-purple-500"></span> Upsell (Anual)
+                                                    </span>
+                                                    <span className="font-bold">2 (8%)</span>
+                                                </div>
+                                                <div className="w-full h-2 bg-gray-200 rounded-full"><div className="h-full bg-purple-500 rounded-full" style={{width: '8%'}}></div></div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    
-                    <div className="flex items-center gap-6">
-                        <a href="https://woca.ocalev.com.br/pages/termo_uso" target="_blank" rel="noopener noreferrer" className="text-xs text-gray-500 hover:text-[#2542AB] transition-colors">Termos de Uso</a>
-                        <a href="https://woca.ocalev.com.br/pages/termo_uso" target="_blank" rel="noopener noreferrer" className="text-xs text-gray-500 hover:text-[#2542AB] transition-colors">Política de Privacidade</a>
+
+                    {/* JORNADA DETALHADA (Rodapé) */}
+                    <div className="glass-card">
+                        <h3 className="text-lg font-bold text-gray-800 border-b border-gray-200 pb-3 mb-4">Jornada: Canal de Atribuição (Detalhado)</h3>
+                        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4">
+                            {channels.map((item, idx) => (
+                                <div key={idx} className="bg-white/50 border border-white rounded-xl p-3 flex flex-col items-center justify-center text-center shadow-sm hover:scale-105 transition-transform h-full min-h-[100px]">
+                                    <div className="text-2xl font-black text-gray-800 mb-1">{item.count}</div>
+                                    <div className="text-[9px] font-bold text-gray-500 uppercase tracking-tight leading-tight px-1">{item.name}</div>
+                                    <div className="w-full h-1 bg-gray-200 rounded-full mt-2 overflow-hidden">
+                                        <div className="h-full rounded-full" style={{ width: '100%', backgroundColor: item.color }}></div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
                     </div>
                 </div>
-                </footer>
             );
         };
 
-        // APP COMPONENT
-        const App = () => {
-            return (
-                <div className="min-h-screen relative flex flex-col items-center overflow-x-hidden">
-                <Navbar />
-                
-                <main className="w-full max-w-[1600px] px-4 md:px-8 pt-24 md:pt-32 pb-10 flex flex-col gap-16 md:gap-24">
-                    <Hero />
-                    <VideoSection />
-                    <FeaturesSection />
-                    <FAQSection />
-                </main>
-
-                <Footer />
-                </div>
-            );
-        };
-
-        // RENDER LOGIC
         const rootElement = document.getElementById('root');
         const root = ReactDOM.createRoot(rootElement);
-        root.render(<App />);
+        root.render(<Dashboard />);
 
     </script>
 </body>
